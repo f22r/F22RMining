@@ -1,0 +1,16 @@
+#!/bin/bash
+
+cd ~/Mining/Qubic/ 
+
+for i in {1..5}; do
+    rm -rf QubicMine$i
+done
+
+mkdir QubicMine && cd QubicMine && wget https://dl.qubicmine.pro/qpro-miner && chmod +x qpro-miner && cd ..
+
+for i in {1..5}; do
+  cp -r QubicMine QubicMine$i
+done
+cp -r QubicMine QubicMineGPU
+
+cd
