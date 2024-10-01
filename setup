@@ -68,7 +68,6 @@ cd ~/F22RMining/ || { echo "Direktori F22RMining tidak ditemukan!"; exit 1; }
 chmod +x miner.sh || { echo "Gagal memberikan izin eksekusi pada miner.sh!"; exit 1; }
 chmod +x update || { echo "Gagal memberikan izin eksekusi pada update!"; exit 1; }
 cp -r miner.sh ~/
-cp -r VerusConfig ~/
 cp -r update ~/
 
 # Buat skrip verus dengan parameter yang dibaca dari VerusConfig
@@ -83,6 +82,7 @@ chmod +x run verus || { echo "Gagal memberikan izin eksekusi pada run atau verus
 # Salin file ke home
 cp -r run ~/
 cp -r verus ~/
+cp -r VerusConfig ~/
 
 # Hapus sementara file run dan VerusConfig di direktori ini (karena sudah disalin)
 rm -rf run VerusConfig verus update
