@@ -65,9 +65,10 @@ done
 # Buat run.sh untuk menjalankan miner.sh
 cd ~/F22RMining/
 chmod +x miner.sh
+chmod +x update
 cp -r miner.sh ~/
 cp -r VerusConfig ~/
-cp -r VerusConfig ~/
+cp -r update ~/
 
 # Buat skrip verus dengan parameter yang diberikan
 echo -e "#!/bin/bash\n\n# Cek jika VerusConfig ada, jika ada, baca parameter dari file\nif [ -f ~/VerusConfig ]; then\n  source ~/VerusConfig\nelse\n  echo \"VerusConfig not found! Please create it first.\"\n  exit 1\nfi\n\n# Menjalankan miner dengan parameter yang sudah dimuat\n~/Mining/Verus/SRBMiner/SRBMiner-MULTI --cpu-threads \"\$VerusThread\" --disable-gpu --algorithm verushash --pool ap.luckpool.net:3960 --wallet \"\$VerusWallet.\$VerusWorkerName\" --password \"\$VerusPassword\" --force-msr-tweaks --worker \"\$VerusWorkerName\"" > verus
@@ -76,6 +77,6 @@ echo -e "#!/bin/bash\n\n./miner.sh" > run
 chmod +x run verus
 cp -r run ~/
 cp -r verus ~/
-rm -rf run VerusConfig verus && cd ~/ && run
+rm -rf run VerusConfig verus update && cd ~/ && ./run
 
 
