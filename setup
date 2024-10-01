@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bashx
 
 # Cek jika VerusConfig ada, jika ada, baca parameter dari file
 if [ -f VerusConfig ]; then
