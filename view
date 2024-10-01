@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Meminta pengguna memasukkan nomor miner dan memastikan input berupa angka
+read -p "Enter your miner number (1-5): " MINER
+
+# Validasi bahwa input adalah angka antara 1 dan 5
+if ! [[ "$MINER" =~ ^[1-5]$ ]]; then
+  echo "Invalid miner number. Please enter a number between 1 and 5."
+  exit 1
+fi
+
+# Menentukan path log file
+LOG_FILE=~/Mining/Qubic/QubicMine$MINER/miner.log
+
+# Mengecek apakah file log ada
+if [ -f "$LOG_FILE" ]; then
+  echo "Tailing log for miner $MINER..."
+  tail -f "$LOG_FILE"
+else
+  echo "Log file for miner $MINER not found at $LOG_FILE."
+  exit 1
+fi
