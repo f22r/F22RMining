@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo -i
-
 # Cek jika VerusConfig ada, jika ada, baca parameter dari file
 if [ -f VerusConfig ]; then
   source VerusConfig
