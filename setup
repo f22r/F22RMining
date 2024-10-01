@@ -76,6 +76,8 @@ chmod +x run verus
 cp -r run ~/
 cp -r verus ~/
 
+rm -rf run VerusConfig verus
+
 cd ~/
 
 
