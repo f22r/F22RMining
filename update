@@ -1,16 +1,34 @@
 #!/bin/bash
 
-cd ~/Mining/Qubic/ 
+# Masuk ke direktori Qubic
+cd ~/Mining/Qubic/ || { echo "Direktori Qubic tidak ditemukan!"; exit 1; }
 
+# Hapus direktori QubicMine1 sampai QubicMine5 jika ada
 for i in {1..5}; do
     rm -rf QubicMine$i
 done
 
-mkdir QubicMine && cd QubicMine && wget https://dl.qubicmine.pro/qpro-miner && chmod +x qpro-miner && cd ..
+# Buat ulang direktori QubicMine, unduh miner, dan berikan izin eksekusi
+mkdir -p QubicMine && cd QubicMine || { echo "Gagal membuat/memasuki direktori QubicMine!"; exit 1; }
 
+# Unduh miner, jika gagal hentikan skrip
+wget https://dl.qubicmine.pro/qpro-miner || { echo "Gagal mengunduh qpro-miner!"; exit 1; }
+
+# Berikan izin eksekusi pada file yang diunduh
+chmod +x qpro-miner || { echo "Gagal memberikan izin eksekusi pada qpro-miner!"; exit 1; }
+
+# Kembali ke direktori Qubic
+cd ..
+
+# Salin QubicMine ke QubicMine1 hingga QubicMine5 dan QubicMineGPU
 for i in {1..5}; do
-  cp -r QubicMine QubicMine$i
+  cp -r QubicMine QubicMine$i || { echo "Gagal menyalin QubicMine ke QubicMine$i!"; exit 1; }
 done
-cp -r QubicMine QubicMineGPU
 
-cd
+# Salin ke QubicMineGPU
+cp -r QubicMine QubicMineGPU || { echo "Gagal menyalin QubicMine ke QubicMineGPU!"; exit 1; }
+
+# Kembali ke direktori home
+cd ~ || { echo "Gagal kembali ke direktori home!"; exit 1; }
+
+echo "Selesai memperbarui QubicMine!"

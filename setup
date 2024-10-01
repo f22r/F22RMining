@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Cek jika VerusConfig ada, jika ada, baca parameter dari file
-if [ -f VerusConfig ]; then
-  source VerusConfig
+if [ -f ~/VerusConfig ]; then
+  source ~/VerusConfig
 else
   # Tanyakan kepada pengguna untuk memasukkan parameter jika VerusConfig tidak ada
   read -p "Thread for Mining Verus (e.g., 24): " VerusThread
@@ -12,71 +12,82 @@ else
 
   # Simpan sesi ke VerusConfig
   echo "Saving session..."
-  echo "VerusThread=$VerusThread" > VerusConfig
-  echo "VerusWallet=$VerusWallet" >> VerusConfig
-  echo "VerusWorkerName=$VerusWorkerName" >> VerusConfig
-  echo "VerusPassword=$VerusPassword" >> VerusConfig
+  echo "VerusThread=$VerusThread" > ~/VerusConfig
+  echo "VerusWallet=$VerusWallet" >> ~/VerusConfig
+  echo "VerusWorkerName=$VerusWorkerName" >> ~/VerusConfig
+  echo "VerusPassword=$VerusPassword" >> ~/VerusConfig
   echo "Session saved to VerusConfig"
 fi
 
-cd ~/
+# Hapus file dan direktori jika ada, dan buat direktori baru
+cd ~ || exit 1
 rm -rf miner.sh run.sh verus
 
-# Hapus direktori Mining jika adxa dan buat direktori baru
-rm -rf ~/Mining && mkdir ~/Mining && cd ~/Mining
+# Hapus direktori Mining jika ada dan buat direktori baru
+rm -rf ~/Mining && mkdir ~/Mining && cd ~/Mining || { echo "Gagal membuat direktori Mining!"; exit 1; }
 
-# Buat direktori Qubic dan salin miner
-mkdir Qubic && cd Qubic
-mkdir QubicMine && cd QubicMine
-wget https://dl.qubicmine.pro/qpro-miner
-chmod +x qpro-miner
+# Buat direktori Qubic dan unduh miner
+mkdir Qubic && cd Qubic || { echo "Gagal membuat direktori Qubic!"; exit 1; }
+mkdir QubicMine && cd QubicMine || { echo "Gagal membuat direktori QubicMine!"; exit 1; }
+wget https://dl.qubicmine.pro/qpro-miner || { echo "Gagal mengunduh qpro-miner!"; exit 1; }
+chmod +x qpro-miner || { echo "Gagal memberikan izin eksekusi pada qpro-miner!"; exit 1; }
+
+# Salin QubicMine ke QubicMine1 hingga QubicMine5 dan QubicMineGPU
 cd ..
-
-# Salin QubicMine ke QubicMine1, QubicMine2, ... QubicMine5 dan QubicMineGPU
 for i in {1..5}; do
-  cp -r QubicMine QubicMine$i
+  cp -r QubicMine QubicMine$i || { echo "Gagal menyalin QubicMine ke QubicMine$i!"; exit 1; }
 done
-cp -r QubicMine QubicMineGPU
+cp -r QubicMine QubicMineGPU || { echo "Gagal menyalin QubicMine ke QubicMineGPU!"; exit 1; }
 
 # Kembali ke direktori Mining
-cd ..
+cd ~/Mining || exit 1
 
 # Buat direktori Verus dan unduh miner
-mkdir Verus && cd Verus
-wget https://github.com/doktor83/SRBMiner-Multi/releases/download/2.6.6/SRBMiner-Multi-2-6-6-Linux.tar.gz
-tar -xzvf SRBMiner-Multi-2-6-6-Linux.tar.gz
+mkdir Verus && cd Verus || { echo "Gagal membuat direktori Verus!"; exit 1; }
+wget https://github.com/doktor83/SRBMiner-Multi/releases/download/2.6.6/SRBMiner-Multi-2-6-6-Linux.tar.gz || { echo "Gagal mengunduh SRBMiner!"; exit 1; }
+tar -xzvf SRBMiner-Multi-2-6-6-Linux.tar.gz || { echo "Gagal mengekstrak SRBMiner!"; exit 1; }
 rm -rf SRBMiner-Multi-2-6-6-Linux.tar.gz
-mv SRBMiner-Multi-2-6-6 SRBMiner
+mv SRBMiner-Multi-2-6-6 SRBMiner || { echo "Gagal memindahkan direktori SRBMiner!"; exit 1; }
 
 # Kembali ke direktori Mining
-cd ~/Mining/
+cd ~/Mining || exit 1
 
 # Klon repository MySantet dan install dependencies
-git clone https://github.com/f22r/MySantet.git && cd MySantet
-sudo apt update && sudo apt install -y build-essential git cmake
+git clone https://github.com/f22r/MySantet.git && cd MySantet || { echo "Gagal mengklon MySantet!"; exit 1; }
+sudo apt update && sudo apt install -y build-essential git cmake || { echo "Gagal menginstal dependencies!"; exit 1; }
 
 # Berikan izin eksekusi pada file santet di setiap direktori
 for i in {1..5}; do
-  cd MySantet$i/
-  chmod +x santet
+  cd MySantet$i/ || { echo "Direktori MySantet$i tidak ditemukan!"; exit 1; }
+  chmod +x santet || { echo "Gagal memberikan izin eksekusi pada santet di MySantet$i!"; exit 1; }
   cd ..
 done
 
 # Buat run.sh untuk menjalankan miner.sh
-cd ~/F22RMining/
-chmod +x miner.sh
-chmod +x update
+cd ~/F22RMining/ || { echo "Direktori F22RMining tidak ditemukan!"; exit 1; }
+chmod +x miner.sh || { echo "Gagal memberikan izin eksekusi pada miner.sh!"; exit 1; }
+chmod +x update || { echo "Gagal memberikan izin eksekusi pada update!"; exit 1; }
 cp -r miner.sh ~/
 cp -r VerusConfig ~/
 cp -r update ~/
 
-# Buat skrip verus dengan parameter yang diberikan
+# Buat skrip verus dengan parameter yang dibaca dari VerusConfig
 echo -e "#!/bin/bash\n\n# Cek jika VerusConfig ada, jika ada, baca parameter dari file\nif [ -f ~/VerusConfig ]; then\n  source ~/VerusConfig\nelse\n  echo \"VerusConfig not found! Please create it first.\"\n  exit 1\nfi\n\n# Menjalankan miner dengan parameter yang sudah dimuat\n~/Mining/Verus/SRBMiner/SRBMiner-MULTI --cpu-threads \"\$VerusThread\" --disable-gpu --algorithm verushash --pool ap.luckpool.net:3960 --wallet \"\$VerusWallet.\$VerusWorkerName\" --password \"\$VerusPassword\" --force-msr-tweaks --worker \"\$VerusWorkerName\"" > verus
+
+# Buat skrip run.sh untuk menjalankan miner.sh
 echo -e "#!/bin/bash\n\n./miner.sh" > run
 
-chmod +x run verus
+# Berikan izin eksekusi pada run.sh dan verus
+chmod +x run verus || { echo "Gagal memberikan izin eksekusi pada run atau verus!"; exit 1; }
+
+# Salin file ke home
 cp -r run ~/
 cp -r verus ~/
-rm -rf run VerusConfig verus update && cd ~/ && ./run
 
+# Hapus sementara file run dan VerusConfig di direktori ini (karena sudah disalin)
+rm -rf run VerusConfig verus update
+
+# Jalankan skrip run
+cd ~ || exit 1
+./run || { echo "Gagal menjalankan run.sh!"; exit 1; }
 
