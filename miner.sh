@@ -3,7 +3,7 @@
  read -p "Enter miner number: " Miner
 
 # Nama file konfigurasi
-CONFIG_FILE="session.$Miner.conf"
+CONFIG_FILE="miner$Miner.conf"
 
 # Fungsi untuk membaca atau membuat konfigurasi
 load_config() {
