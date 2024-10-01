@@ -82,10 +82,9 @@ chmod +x run verus || { echo "Gagal memberikan izin eksekusi pada run atau verus
 # Salin file ke home
 cp -r run ~/
 cp -r verus ~/
-cp -r VerusConfig ~/
 
 # Hapus sementara file run dan VerusConfig di direktori ini (karena sudah disalin)
-rm -rf run VerusConfig verus update
+rm -rf run verus update
 
 # Jalankan skrip run
 cd ~ || exit 1
