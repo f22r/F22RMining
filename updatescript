@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Cek dan masuk ke direktori F2RRMining, jika tidak ada, keluarkan pesan error
-cd ~/F2RRMining/ || { echo "Base directory tidak ditemukan! Pastikan ~/F2RRMining/ sudah benar."; exit 1; }
+cd ~/F22RMining/ || { echo "Base directory tidak ditemukan! Pastikan ~/F22RMining/ sudah benar."; exit 1; }
 
 # Buang semua perubahan lokal yang belum di-commit
 if git reset --hard; then
