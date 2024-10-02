@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # Cek dan masuk ke direktori F2RRMining, jika tidak ada, keluarkan pesan error
-cd ~/F22RMining/ || { echo "Base directory tidak ditemukan! Pastikan ~/F22RMining/ sudah benar."; exit 1; }
+cd ~/F2RRMining/ || { echo "Base directory tidak ditemukan! Pastikan ~/F2RRMining/ sudah benar."; exit 1; }
 
-# Fetch dari origin dan cek keberhasilannya
-if git fetch origin; then
-  echo "Git fetch berhasil."
+# Buang semua perubahan lokal yang belum di-commit
+if git reset --hard; then
+  echo "Perubahan lokal telah dibuang."
 else
-  echo "Git fetch gagal. Periksa koneksi atau konfigurasi git Anda."
+  echo "Gagal membuang perubahan lokal."
   exit 1
 fi
 
-# Pull dari origin/main dan cek keberhasilannya
-if git pull origin main; then
+# Fetch dan pull dari origin/main
+if git fetch origin && git pull origin main; then
   echo "Git pull berhasil."
 else
-  echo "Git pull gagal. Periksa konflik atau masalah lainnya."
+  echo "Git pull gagal."
   exit 1
 fi
 
