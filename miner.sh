@@ -322,9 +322,7 @@ while true; do
 
 sleep 5m
 
-   if [ $? -eq 1 ]; then
-
-  if [ "$first_idling" = true ]; then
+     if [ "$first_idling" = true ]; then
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Memasuki mode idling ..."
     first_idling=false
@@ -353,7 +351,6 @@ sleep 5m
 
   
     bIdle=true
-  fi
   fi
 
   # Cek error miner dan restart jika ada error
