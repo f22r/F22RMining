@@ -320,7 +320,7 @@ while true; do
       bIdle=false
   else
 
-sleep 10m
+sleep 5m
 
    if [ $? -eq 1 ]; then
 
