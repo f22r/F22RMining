@@ -136,9 +136,9 @@ run_qpro_miner() {
 
   # Jalankan miner berdasarkan jenis instruksi
   if [[ "$TYPE" == "AVX2" || "$TYPE" == "AVX512" ]]; then
-    "$SANTET/santet" "$MINER_PATH/qpro-miner" -t "$THREAD" --cpu -i "$CPU_TYPE" --wallet "$WALLET" --worker "$NAME" --url 45.77.88.58 --idle "echo Hii" &>> "$MINER_LOG_PATH" &
+    "$SANTET/santet" "$MINER_PATH/qpro-miner" -t "$THREAD" --cpu -i "$CPU_TYPE" --wallet "$WALLET" --worker "$NAME" --url ws.qubicmine.pro --idle "echo Hii" &>> "$MINER_LOG_PATH" &
   else
-    "$SANTET/santet" "$MINER_PATH/qpro-miner" --gpu --wallet "$WALLET" --worker "$NAME" --url 45.77.88.58 --idle "echo $NAME idle" &>> "$MINER_LOG_PATH" &
+    "$SANTET/santet" "$MINER_PATH/qpro-miner" --gpu --wallet "$WALLET" --worker "$NAME" --url ws.qubicmine.pro --idle "echo $NAME idle" &>> "$MINER_LOG_PATH" &
   fi
 }
 
@@ -175,11 +175,6 @@ check_miner_errors() {
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
   fi
-
-  
- 
-
-
 
 }
 
@@ -289,7 +284,7 @@ while true; do
 
   # Hentikan Verus jika trainer Qubic sedang berjalan
   if [ $? -eq 1 ]; then
-
+      
       if [ "$RunVerus" = true ]; then 
             if pgrep -f SRBMiner > /dev/null; then
              echo "$(date '+%Y-%m-%d %H:%M:%S') - Proses Verus ditemukan, menghentikan..."
@@ -299,7 +294,8 @@ while true; do
              sleep 10
              echo "$(date '+%Y-%m-%d %H:%M:%S') - Memastikan verus telah berhenti "
               fi
-    fi
+      
+       fi
       if [ "$bIdle" = true ]; then
       
       echo "$(date '+%Y-%m-%d %H:%M:%S') - Idle telah selesai."
@@ -324,7 +320,12 @@ while true; do
       bIdle=false
   else
 
+sleep 10m
+
+   if [ $? -eq 1 ]; then
+
   if [ "$first_idling" = true ]; then
+
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Memasuki mode idling ..."
     first_idling=false
 
@@ -352,7 +353,7 @@ while true; do
 
   
     bIdle=true
-
+  fi
   fi
 
   # Cek error miner dan restart jika ada error
