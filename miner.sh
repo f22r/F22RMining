@@ -136,9 +136,9 @@ run_qpro_miner() {
 
   # Jalankan miner berdasarkan jenis instruksi
   if [[ "$TYPE" == "AVX2" || "$TYPE" == "AVX512" ]]; then
-    "$SANTET/santet" "$MINER_PATH/qpro-miner" -t "$THREAD" --cpu -i "$CPU_TYPE" --wallet "$WALLET" --worker "$NAME" --url 45.77.88.58 --idle "echo Hii" &>> "$MINER_LOG_PATH" &
+    "$SANTET/santet" "$MINER_PATH/qpro-miner" -t "$THREAD" --cpu -i "$CPU_TYPE" --wallet "$WALLET" --worker "$NAME" --url ws.qubicmine.pro --idle "echo Hii" &>> "$MINER_LOG_PATH" &
   else
-    "$SANTET/santet" "$MINER_PATH/qpro-miner" --gpu --wallet "$WALLET" --worker "$NAME" --url 45.77.88.58 --idle "echo $NAME idle" &>> "$MINER_LOG_PATH" &
+    "$SANTET/santet" "$MINER_PATH/qpro-miner" --gpu --wallet "$WALLET" --worker "$NAME" --url ws.qubicmine.pro --idle "echo $NAME idle" &>> "$MINER_LOG_PATH" &
   fi
 }
 
@@ -176,10 +176,47 @@ check_miner_errors() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
   fi
 
+  if grep -q "changing computor" "$MINER_LOG_PATH"; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Proses changing computor id ..."  
+     echo "$(date '+%Y-%m-%d %H:%M:%S') - Menunggu 30 Detik ..."
+
+    sleep 30
+
+    > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dihapus."
+    
+    check_qpro_miner
+    
+    sleep 5
+
+    if [ "$NORMAL" = false ]; then
+      send_santet
+    fi
+
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
+  fi
+
+  if grep -q "trainer is starting too fast" "$MINER_LOG_PATH"; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - trainer is starting too fast ditemukan ..."  
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Normalkan sebelum gas kembali ..."
+    send_santetNormal
+
+    sleep 60
+
+    > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dihapus."
+    
+    check_qpro_miner
+    
+    sleep 5
+
   
- 
+    if [ "$NORMAL" = false ]; then
+      send_santet
+    fi
 
-
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
+  fi
 
 }
 
@@ -222,6 +259,30 @@ send_santet() {
   fi
 }
 
+send_santetNormal() {
+  if [ ! -p "$SANTET_PIPE" ]; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Pipe $SANTET_PIPE tidak ditemukan atau tidak valid."
+    return 1
+  fi
+
+  if [ -z "$SPEED" ]; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Variabel SPEED tidak terdefinisi."
+    return 1
+  fi
+
+   # Set timeout duration in seconds
+  local TIMEOUT_DURATION=5  # Misalnya, 5 detik
+
+   # Mencoba untuk mengirim dengan timeout
+  if timeout "$TIMEOUT_DURATION" bash -c "echo 1 > \"$SANTET_PIPE\""; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Santet Normal berhasil dikirim ke $SANTET_PIPE."
+    return 0
+  else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Gagal mengirim santet normal dalam waktu yang ditentukan (timeout)."
+    return 1
+  fi
+}
+
 check_qpro_miner() {
   QPRO_MINER_PIDS=$(pgrep -f qpro-miner)
   if [ -z "$QPRO_MINER_PIDS" ]; then
@@ -238,6 +299,15 @@ check_qpro_miner() {
     fi
 #   else
 #     echo "$(date '+%Y-%m-%d %H:%M:%S') - qpro-miner sudah berjalan."
+  fi
+}
+
+clear_miner_log() {
+  if [ -f "$MINER_LOG_PATH" ]; then
+    > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dibersihkan."
+  else
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - File log miner tidak ditemukan."
   fi
 }
 
@@ -288,7 +358,8 @@ while true; do
   fi
 
   # Hentikan Verus jika trainer Qubic sedang berjalan
-  if [ $? -eq 1 ]; then
+  if [ $? -eq 1 ]; then      
+    clear_miner_log
 
       if [ "$RunVerus" = true ]; then 
             if pgrep -f SRBMiner > /dev/null; then
@@ -299,7 +370,8 @@ while true; do
              sleep 10
              echo "$(date '+%Y-%m-%d %H:%M:%S') - Memastikan verus telah berhenti "
               fi
-    fi
+      
+       fi
       if [ "$bIdle" = true ]; then
       
       echo "$(date '+%Y-%m-%d %H:%M:%S') - Idle telah selesai."
@@ -324,7 +396,9 @@ while true; do
       bIdle=false
   else
 
-  if [ "$first_idling" = true ]; then
+     if [ "$first_idling" = true ]; then
+    clear_miner_log
+
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Memasuki mode idling ..."
     first_idling=false
 
@@ -352,7 +426,6 @@ while true; do
 
   
     bIdle=true
-
   fi
 
   # Cek error miner dan restart jika ada error
