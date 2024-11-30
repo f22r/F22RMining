@@ -176,10 +176,47 @@ check_miner_errors() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
   fi
 
+  if grep -q "changing computor" "$MINER_LOG_PATH"; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Proses changing computor id ..."  
+     echo "$(date '+%Y-%m-%d %H:%M:%S') - Menunggu 30 Detik ..."
+
+    sleep 30
+
+    > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dihapus."
+    
+    check_qpro_miner
+    
+    sleep 5
+
+    if [ "$NORMAL" = false ]; then
+      send_santet
+    fi
+
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
+  fi
+
+  if grep -q "trainer is starting too fast" "$MINER_LOG_PATH"; then
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - trainer is starting too fast ditemukan ..."  
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Normalkan sebelum gas kembali ..."
+    send_santetNormal
+
+    sleep 60
+
+    > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dihapus."
+    
+    check_qpro_miner
+    
+    sleep 5
+
   
- 
+    if [ "$NORMAL" = false ]; then
+      send_santet
+    fi
 
-
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Mari kita melihat hasilnya ... "
+  fi
 
 }
 
@@ -321,7 +358,8 @@ while true; do
   fi
 
   # Hentikan Verus jika trainer Qubic sedang berjalan
-  if [ $? -eq 1 ]; then
+  if [ $? -eq 1 ]; then      
+    clear_miner_log
 
       if [ "$RunVerus" = true ]; then 
             if pgrep -f SRBMiner > /dev/null; then
@@ -358,9 +396,9 @@ while true; do
       bIdle=false
   else
 
-sleep 5m
+     if [ "$first_idling" = true ]; then
+    clear_miner_log
 
-  if [ "$first_idling" = true ]; then
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Memasuki mode idling ..."
     first_idling=false
 
