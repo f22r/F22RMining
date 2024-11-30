@@ -119,6 +119,9 @@ check_gpu_cuda_trainer() {
 
 # Fungsi untuk menjalankan qpro-miner dengan parameter path dan worker yang berbeda
 run_qpro_miner() {
+   > "$MINER_LOG_PATH"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dihapus."
+    
   local MINER_PATH=$1
   local CPU_TYPE=$2  # Menentukan jenis instruksi (avx512/avx2)
   local THREAD=$3
