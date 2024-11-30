@@ -302,15 +302,6 @@ check_qpro_miner() {
   fi
 }
 
-clear_miner_log() {
-  if [ -f "$MINER_LOG_PATH" ]; then
-    > "$MINER_LOG_PATH"
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - Log miner telah dibersihkan."
-  else
-    echo "$(date '+%Y-%m-%d %H:%M:%S') - File log miner tidak ditemukan."
-  fi
-}
-
 # Loop utama
 while true; do
 
