@@ -359,7 +359,7 @@ while true; do
 
   # Hentikan Verus jika trainer Qubic sedang berjalan
   if [ $? -eq 1 ]; then      
-    clear_miner_log
+    # clear_miner_log
 
       if [ "$RunVerus" = true ]; then 
             if pgrep -f SRBMiner > /dev/null; then
@@ -397,7 +397,7 @@ while true; do
   else
 
      if [ "$first_idling" = true ]; then
-    clear_miner_log
+    # clear_miner_log
 
     echo "$(date '+%Y-%m-%d %H:%M:%S') - Memasuki mode idling ..."
     first_idling=false
