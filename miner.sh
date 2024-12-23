@@ -356,9 +356,9 @@ while true; do
     # clear_miner_log
 
       if [ "$RunVerus" = true ]; then 
-            if pgrep -f SRBMiner > /dev/null; then
+            if pgrep -f tnn-miner-cpu > /dev/null; then
              echo "$(date '+%Y-%m-%d %H:%M:%S') - Proses Verus ditemukan, menghentikan..."
-             pkill -f SRBMiner
+             pkill -f tnn-miner-cpu
 
              echo "$(date '+%Y-%m-%d %H:%M:%S') - Mining Verus telah dihentikan."
              sleep 10
@@ -403,9 +403,9 @@ while true; do
 
       if [ "$RunVerus" = true ]; then 
            echo "$(date '+%Y-%m-%d %H:%M:%S') - Menjalankan Verus..."
-           if ! pgrep -f SRBMiner > /dev/null; then
+           if ! pgrep -f tnn-miner-cpu > /dev/null; then
              if [ "$Miner" -eq 1 ]; then
-               ~/verus &
+               ~/Spectre/run &
              else
                echo "$(date '+%Y-%m-%d %H:%M:%S') - Hanya miner pertama yang menjalankan verus."
              fi
