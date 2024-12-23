@@ -405,7 +405,7 @@ while true; do
            echo "$(date '+%Y-%m-%d %H:%M:%S') - Menjalankan Verus..."
            if ! pgrep -f tnn-miner-cpu > /dev/null; then
              if [ "$Miner" -eq 1 ]; then
-               ~/Spectre/run &
+               ~/runspectre &
              else
                echo "$(date '+%Y-%m-%d %H:%M:%S') - Hanya miner pertama yang menjalankan verus."
              fi
